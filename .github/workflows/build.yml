@@ -1,7 +1,7 @@
-name: 编译 HMA-OSS APK
+name: 编译 HMA-OSS APK（自定义包名版）
 
 on:
-  workflow_dispatch:   # 手动点击就能编译
+  workflow_dispatch:
 
 jobs:
   build:
@@ -31,6 +31,9 @@ jobs:
         yes | sdkmanager --licenses || true
         sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
 
+    - name: 创建 local.properties（修复错误的关键）
+      run: echo "sdk.dir=$ANDROID_HOME" > local.properties
+
     - name: 给 gradlew 执行权限
       run: chmod +x gradlew
 
@@ -40,5 +43,5 @@ jobs:
     - name: 上传编译好的 APK
       uses: actions/upload-artifact@v4
       with:
-        name: HMA-OSS-自定义版
+        name: HMA-OSS-自定义包名版
         path: app/build/outputs/apk/release/*.apk
